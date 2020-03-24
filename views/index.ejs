@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script>
+    var socket = io.connect('http://localhost:8080');
+
+    socket.on('connect', function () {
+      console.log('Client has connected to the server!');
+    });
+    // THERMOMETER
+    socket.on('t_lastValue', function (data) {
+      $("#t_lastValue").html(data);
+    });
+
+    socket.on('t_values', function (data) {
+      $("#t_values").html(data);
+    });
+    // HUMIDITY
+    socket.on('h_lastValue', function (data) {
+      $("#h_lastValue").html(data);
+    });
+
+    socket.on('h_values', function (data) {
+      $("#h_values").html(data);
+    });
+    // WIND DIR
+    socket.on('wd_lastValue', function (data) {
+      $("#wd_lastValue").html(data);
+    });
+
+    socket.on('wd_values', function (data) {
+      $("#wd_values").html(data);
+    });
+    // WIND INT
+    socket.on('wi_lastValue', function (data) {
+      $("#wi_lastValue").html(data);
+    });
+
+    socket.on('wi_values', function (data) {
+      $("#wi_values").html(data);
+    });
+    // RAIN HEIGHT
+    socket.on('rh_lastValue', function (data) {
+      $("#rh_lastValue").html(data);
+    });
+
+    socket.on('rh_values', function (data) {
+      $("#rh_values").html(data);
+    });
+  </script>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>IoT Server</title>
+</head>
+
+<body>
+  <div id="mainContent" style="margin: 10px">
+    <h1><%= header.title %></h1>
+    <p>
+      <%= header.info %>
+    </p>
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Thermometer </h5>
+        <p class="card-text" id='t_lastValue'></p>
+        <p class="card-text" id='t_values'></p>
+
+      </div>
+    </div>
+
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Humidity Controller </h5>
+        <p class="card-text" id='h_lastValue'></p>
+        <p class="card-text" id='h_values'></p>
+      </div>
+    </div>
+
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Wind Direction </h5>
+        <p class="card-text" id='wd_lastValue'></p>
+        <p class="card-text" id='wd_values'></p>
+      </div>
+    </div>
+
+
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Wind Intensity </h5>
+        <p class="card-text" id='wi_lastValue'></p>
+        <p class="card-text" id='wi_values'></p>
+      </div>
+    </div>
+
+
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">Rein Height </h5>
+        <p class="card-text" id='rh_lastValue'></p>
+        <p class="card-text" id='rh_values'></p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>

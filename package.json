@@ -2,7 +2,7 @@
   "name": "web",
   "version": "1.0.0",
   "description": "Simple HTML logger for IoT project",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,5 +18,13 @@
   "bugs": {
     "url": "https://github.com/SignorAutoma/IoT2020_ProjectHW/issues"
   },
-  "homepage": "https://github.com/SignorAutoma/IoT2020_ProjectHW#readme"
+  "homepage": "https://github.com/SignorAutoma/IoT2020_ProjectHW#readme",
+  "dependencies": {
+    "@google-cloud/pubsub": "^1.6.0",
+    "@google-cloud/storage": "^4.6.0",
+    "body-parser": "^1.19.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
 }
