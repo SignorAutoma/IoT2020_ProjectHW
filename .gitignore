@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+rsa_cert.pem
+rsa_private.pem
