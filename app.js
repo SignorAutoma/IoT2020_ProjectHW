@@ -53,7 +53,7 @@ let log = [
 // CONNESSIONE AL DATABASE
 mongoose.Promise = global.Promise;
 
-const uri = "mongodb+srv://SignorAutoma:provaiot2020@cluster0-auf7a.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI || "mongodb+srv://SignorAutoma:provaiot2020@cluster0-auf7a.gcp.mongodb.net/test?retryWrites=true&w=majority";
 
 mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
   if (err) {
