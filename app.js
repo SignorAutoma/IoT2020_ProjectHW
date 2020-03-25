@@ -17,6 +17,38 @@ const timeout = 180;
 const pubSubClient = new PubSub(projectId);
 const subscriptionName = 'projects/signorautoma-iot/subscriptions/first-assignment';
 
+const header = {
+  title: "Simple IoT MQTT-Google Cloud Server",
+  info: "Retriving data from devices",
+}
+
+let log = [
+  {
+    device: 'thermometer',
+    lastValue: '',
+    values: [],
+  },
+  {
+    device: 'humidity controller',
+    lastValue: '',
+    values: [],
+  },
+  {
+    device: 'wind-direction',
+    lastValue: '',
+    values: [],
+  },
+  {
+    device: 'wind-intensity',
+    lastValue: '',
+    values: [],
+  },
+  {
+    device: 'rain-height',
+    lastValue: '',
+    values: [],
+  },
+]
 
 // CONNESSIONE AL DATABASE
 mongoose.Promise = global.Promise;
@@ -26,7 +58,7 @@ const uri = "mongodb+srv://SignorAutoma:provaiot2020@cluster0-auf7a.gcp.mongodb.
 mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
   if (err) {
     console.error('ERROR:\n\nDATABASE NON RAGGIUNGIBILE\n' + JSON.stringify(err));
-    onError(err);
+    console.error(err);
   } else {
     console.log('DEBUG: CONNESSO AL DATABASE ');
     
@@ -61,40 +93,6 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
 });
 
 
-
-
-const header = {
-  title: "Simple IoT MQTT-Google Cloud Server",
-  info: "Retriving data from devices",
-}
-
-let log = [
-  {
-    device: 'thermometer',
-    lastValue: '',
-    values: [],
-  },
-  {
-    device: 'humidity controller',
-    lastValue: '',
-    values: [],
-  },
-  {
-    device: 'wind-direction',
-    lastValue: '',
-    values: [],
-  },
-  {
-    device: 'wind-intensity',
-    lastValue: '',
-    values: [],
-  },
-  {
-    device: 'rain-height',
-    lastValue: '',
-    values: [],
-  },
-]
 
 function listenForMessages(socket) {
   // References an existing subscription
