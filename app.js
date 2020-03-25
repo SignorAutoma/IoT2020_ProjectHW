@@ -8,14 +8,59 @@ const bodyParser = require('body-parser');
 var io = require('socket.io');
 var server = http.createServer(app);
 var listener = io.listen(server);
-
-
+const mongoose = require('mongoose');
+const Data = require('./models/data.model');
 
 const { PubSub } = require('@google-cloud/pubsub');
 const projectId = "signorautoma-iot";
 const timeout = 180;
 const pubSubClient = new PubSub(projectId);
 const subscriptionName = 'projects/signorautoma-iot/subscriptions/first-assignment';
+
+
+// CONNESSIONE AL DATABASE
+mongoose.Promise = global.Promise;
+
+const uri = "mongodb+srv://SignorAutoma:provaiot2020@cluster0-auf7a.gcp.mongodb.net/test?retryWrites=true&w=majority";
+
+mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
+  if (err) {
+    console.error('ERROR:\n\nDATABASE NON RAGGIUNGIBILE\n' + JSON.stringify(err));
+    onError(err);
+  } else {
+    console.log('DEBUG: CONNESSO AL DATABASE ');
+    
+    Data.find({date: { $gt: parseInt(Date.now()/1000) - 3600 }})
+      .then(values => {
+        for (i = 0; i < values.length; i++) {
+          if (values[i]._doc.device == "thermometer") {
+            log[0].lastValue = values[i]._doc.value;
+            log[0].values.push(values[i]._doc.value);
+          }
+          else if (values[i]._doc.device == "humidity") {
+            log[1].lastValue = values[i]._doc.value;
+            log[1].values.push(values[i]._doc.value);
+          }
+          else if (values[i]._doc.device == "wind-direction") {
+            log[2].lastValue = values[i]._doc.value;
+            log[2].values.push(values[i]._doc.value);
+          }
+          else if (values[i]._doc.device == "wind-intensity") {
+            log[3].lastValue = values[i]._doc.value;
+            log[3].values.push(values[i]._doc.value);
+          }
+          else {
+            log[4].lastValue = values[i]._doc.value;
+            log[4].values.push(values[i]._doc.value);
+          }
+        }
+      })
+
+
+  }
+});
+
+
 
 
 const header = {
@@ -66,6 +111,13 @@ function listenForMessages(socket) {
       var x = data[0].toString();
       var y = data[1].toString();
 
+      const received = {
+        device: x,
+        value: y,
+        date: Date.now()/1000,
+      };
+      new Data(received).save();
+
       if (x == "thermometer") {
         log[0].lastValue = y;
         log[0].values.push(y);
@@ -99,9 +151,7 @@ function listenForMessages(socket) {
 
     }
 
-
     messageCount += 1;
-    // "Ack" (acknowledge receipt of) the message
     message.ack();
   };
 
@@ -144,33 +194,11 @@ async function listenForErrors() {
 }
 
 
-/* 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-
-  const output = ejs.render(template, { header, log });
-  listenForMessages();
-  listenForErrors();
-
-  res.end(output);
-});
-
-const callback = () => {
-  const address = server.address().address;
-  const port = server.address().port;
-
-
-  console.log('Server Listening on http://' + address + ':' + port);
-}
-
-server.listen(8000, '127.0.0.1', callback) */
-
-
 app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));
 app.set('view engine', 'ejs');
 
 app.get('/', function (req, res) {
-  res.render(template, { header });
+  res.render(template, { header, log });
 });
 
 

@@ -74,8 +74,8 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Thermometer </h5>
-        <p class="card-text" id='t_lastValue'></p>
-        <p class="card-text" id='t_values'></p>
+        <p class="card-text" id='t_lastValue'><%= log[0].lastValue %></p>
+        <p class="card-text" id='t_values'><%= log[0].values %></p>
 
       </div>
     </div>
@@ -83,16 +83,16 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Humidity Controller </h5>
-        <p class="card-text" id='h_lastValue'></p>
-        <p class="card-text" id='h_values'></p>
+        <p class="card-text" id='h_lastValue'><%= log[1].lastValue %></p>
+        <p class="card-text" id='h_values'><%= log[1].values %></p>
       </div>
     </div>
 
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Wind Direction </h5>
-        <p class="card-text" id='wd_lastValue'></p>
-        <p class="card-text" id='wd_values'></p>
+        <p class="card-text" id='wd_lastValue'><%= log[2].lastValue %></p>
+        <p class="card-text" id='wd_values'><%= log[2].values %></p>
       </div>
     </div>
 
@@ -100,8 +100,8 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Wind Intensity </h5>
-        <p class="card-text" id='wi_lastValue'></p>
-        <p class="card-text" id='wi_values'></p>
+        <p class="card-text" id='wi_lastValue'><%= log[3].lastValue %></p>
+        <p class="card-text" id='wi_values'><%= log[3].values %></p>
       </div>
     </div>
 
@@ -109,8 +109,8 @@
     <div class="card" style="width: 18rem;">
       <div class="card-body">
         <h5 class="card-title">Rein Height </h5>
-        <p class="card-text" id='rh_lastValue'></p>
-        <p class="card-text" id='rh_values'></p>
+        <p class="card-text" id='rh_lastValue'><%= log[4].lastValue %></p>
+        <p class="card-text" id='rh_values'><%= log[4].values %></p>
       </div>
     </div>
   </div>
