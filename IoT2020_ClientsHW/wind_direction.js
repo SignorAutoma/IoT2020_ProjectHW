@@ -31,7 +31,7 @@ const publishAsync = (
 
         var perc = Math.floor(Math.random() * (360)) + '°';
         const payload = deviceId + ": " + perc;
-        // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
+        // Publish "payload" to the MQTT topic. qos=1 means at least once delivery.
         console.log('Publishing message:', payload);
         client.publish(mqttTopic, payload, { qos: 1 });
 

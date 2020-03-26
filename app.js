@@ -1,10 +1,7 @@
 const http = require('http');
 const express = require('express');
-const fs = require('fs');
-const ejs = require('ejs');
 const template = __dirname + '/views/index.ejs';
 const app = express();
-const bodyParser = require('body-parser');
 var io = require('socket.io');
 var server = http.createServer(app);
 var listener = io.listen(server);
@@ -18,8 +15,9 @@ const pubSubClient = new PubSub(projectId);
 const subscriptionName = 'projects/signorautoma-iot/subscriptions/first-assignment';
 
 const header = {
-  title: "Simple IoT MQTT-Google Cloud Server",
-  info: "Retriving data from devices",
+  title: "Google Cloud-based IoT system dashboard",
+  info: "Retriving data from a set of virtual environmental sensors",
+  author: "By Fabio Caputo, 1695402"
 }
 
 let log = [
@@ -61,10 +59,15 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
     console.error(err);
   } else {
     console.log('DEBUG: CONNESSO AL DATABASE ');
+
+    var lastHour = new Date();
+    lastHour.setHours(lastHour.getHours()-1);
     
-    Data.find({date: { $gt: parseInt(Date.now()/1000) - 3600 }})
+    Data.find({ "createdAt":{$gt: lastHour} })
       .then(values => {
+        console.log(values);
         for (i = 0; i < values.length; i++) {
+          console.log(values[i]._doc.device)
           if (values[i]._doc.device == "thermometer") {
             log[0].lastValue = values[i]._doc.value;
             log[0].values.push(values[i]._doc.value);
@@ -87,8 +90,6 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
           }
         }
       })
-
-
   }
 });
 
@@ -106,43 +107,43 @@ function listenForMessages(socket) {
 
     var data = `${message.data}`.split(":");
     if (data != null) {
-      var x = data[0].toString();
-      var y = data[1].toString();
+      var device = data[0].toString();
+      var value = data[1].toString();
 
-      const received = {
-        device: x,
-        value: y,
-        date: Date.now()/1000,
-      };
-      new Data(received).save();
+      new Data
+        ({
+          device: device,
+          value: value,
+          data: Date.now() / 1000
+        }).save();
 
-      if (x == "thermometer") {
-        log[0].lastValue = y;
-        log[0].values.push(y);
+      if (device == "thermometer") {
+        log[0].lastValue = value;
+        log[0].values.push(value);
         socket.emit('t_lastValue', log[0].lastValue);
         socket.emit('t_values', log[0].values);
       }
-      else if (x == "humidity") {
-        log[1].lastValue = y;
-        log[1].values.push(y);
+      else if (device == "humidity") {
+        log[1].lastValue = value;
+        log[1].values.push(value);
         socket.emit('h_lastValue', log[1].lastValue);
         socket.emit('h_values', log[1].values);
       }
-      else if (x == "wind-direction") {
-        log[2].lastValue = y;
-        log[2].values.push(y);
+      else if (device == "wind-direction") {
+        log[2].lastValue = value;
+        log[2].values.push(value);
         socket.emit('wd_lastValue', log[2].lastValue);
         socket.emit('wd_values', log[2].values);
       }
-      else if (x == "wind-intensity") {
-        log[3].lastValue = y;
-        log[3].values.push(y);
+      else if (device == "wind-intensity") {
+        log[3].lastValue = value;
+        log[3].values.push(value);
         socket.emit('wi_lastValue', log[3].lastValue);
         socket.emit('wi_values', log[3].values);
       }
       else {
-        log[4].lastValue = y;
-        log[4].values.push(y);
+        log[4].lastValue = value;
+        log[4].values.push(value);
         socket.emit('rh_lastValue', log[4].lastValue);
         socket.emit('rh_values', log[4].values);
       }
@@ -162,35 +163,6 @@ function listenForMessages(socket) {
   }, timeout * 1000);
 }
 
-async function listenForErrors() {
-  // References an existing subscription
-  const subscription = pubSubClient.subscription(subscriptionName);
-
-  // Create an event handler to handle messages
-  const messageHandler = function (message) {
-    // Do something with the message
-    console.log(`Message: ${message}`);
-
-    // "Ack" (acknowledge receipt of) the message
-    message.ack();
-  };
-
-  // Create an event handler to handle errors
-  const errorHandler = function (error) {
-    // Do something with the error
-    console.error(`ERROR: ${error}`);
-  };
-
-  // Listen for new messages/errors until timeout is hit
-  subscription.on('message', messageHandler);
-  subscription.on('error', errorHandler);
-
-  setTimeout(() => {
-    subscription.removeListener('message', messageHandler);
-    //subscription.removeListener('error', errorHandler);
-  }, timeout * 1000);
-}
-
 
 app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));
 app.set('view engine', 'ejs');
@@ -203,6 +175,8 @@ app.get('/', function (req, res) {
 listener.on('connection', function (socket) {
 
   console.log('Connection to client established');
+
+
   listenForMessages(socket)
 
   socket.on('disconnect', function () {

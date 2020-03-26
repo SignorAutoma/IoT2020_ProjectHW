@@ -66,12 +66,15 @@
 </head>
 
 <body>
-  <div id="mainContent" style="margin: 10px">
+  <div id="mainContent"  style="text-align:center;">
     <h1><%= header.title %></h1>
-    <p>
+    <h5>
       <%= header.info %>
-    </p>
-    <div class="card" style="width: 18rem;">
+    </h5>
+    <h8 style="margin-bottom: 30px;">
+      <%= header.author %>
+    </h8>
+    <div class="card"  style="text-align:center; margin-top: 40px;">
       <div class="card-body">
         <h5 class="card-title">Thermometer </h5>
         <p class="card-text" id='t_lastValue'><%= log[0].lastValue %></p>
@@ -80,7 +83,7 @@
       </div>
     </div>
 
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="text-align:center">
       <div class="card-body">
         <h5 class="card-title">Humidity Controller </h5>
         <p class="card-text" id='h_lastValue'><%= log[1].lastValue %></p>
@@ -88,7 +91,7 @@
       </div>
     </div>
 
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="text-align:center">
       <div class="card-body">
         <h5 class="card-title">Wind Direction </h5>
         <p class="card-text" id='wd_lastValue'><%= log[2].lastValue %></p>
@@ -97,7 +100,7 @@
     </div>
 
 
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="text-align:center">
       <div class="card-body">
         <h5 class="card-title">Wind Intensity </h5>
         <p class="card-text" id='wi_lastValue'><%= log[3].lastValue %></p>
@@ -106,7 +109,7 @@
     </div>
 
 
-    <div class="card" style="width: 18rem;">
+    <div class="card" style="text-align:center">
       <div class="card-body">
         <h5 class="card-title">Rein Height </h5>
         <p class="card-text" id='rh_lastValue'><%= log[4].lastValue %></p>
