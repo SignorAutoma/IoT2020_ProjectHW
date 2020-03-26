@@ -6,6 +6,6 @@ Simple implementation of a IoT cloud based system, that system will collects inf
 ## Links
 Some usefull links to explain the project:
 
-[Youtube Video Presentation](https://pages.github.com/)
+[Youtube Video Presentation](https://www.youtube.com/watch?v=rRAg-Kg9FS4)
 
-[Hackster.io Tutorial](https://www.hackster.io/projects/f30ccf/edit#story)
+[Hackster.io Tutorial](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-f30ccf)
