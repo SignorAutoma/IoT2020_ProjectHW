@@ -283,8 +283,8 @@ static int cmd_will(int argc, char **argv)
 }
 static char *generate_value(char *device)
 {
-    char data[12];
-    char *ret = malloc(sizeof(char) * 40);
+    char data[8];
+    char *ret = malloc(sizeof(char) * 50);
 
     if (!strcmp(device, "thermometer"))
     {
@@ -292,8 +292,9 @@ static char *generate_value(char *device)
         sprintf(data, "%d °C", temp);
 
         strcpy(ret, device);
-        strcpy(ret, ":");
-        strcpy(ret, data);
+        strcat(ret, ":");
+        strcat(ret, data);
+        printf("%s\n", ret);
         return ret;
     }
     else if (!strcmp(device, "humidity"))
@@ -302,8 +303,8 @@ static char *generate_value(char *device)
         sprintf(data, "%d %%", humd);
 
         strcpy(ret, device);
-        strcpy(ret, ":");
-        strcpy(ret, data);
+        strcat(ret, ":");
+        strcat(ret, data);
         return ret;
     }
     else if (!strcmp(device, "wind-direction"))
@@ -312,8 +313,8 @@ static char *generate_value(char *device)
         sprintf(data, "%d °", wddr);
 
         strcpy(ret, device);
-        strcpy(ret, ":");
-        strcpy(ret, data);
+        strcat(ret, ":");
+        strcat(ret, data);
         return ret;
     }
     else if (!strcmp(device, "wind-intensity"))
@@ -322,8 +323,8 @@ static char *generate_value(char *device)
         sprintf(data, "%d m/s", wdin);
 
         strcpy(ret, device);
-        strcpy(ret, ":");
-        strcpy(ret, data);
+        strcat(ret, ":");
+        strcat(ret, data);
         return ret;
     }
     else
@@ -332,8 +333,8 @@ static char *generate_value(char *device)
         sprintf(data, "%d mm/h", rahg);
 
         strcpy(ret, device);
-        strcpy(ret, ":");
-        strcpy(ret, data);
+        strcat(ret, ":");
+        strcat(ret, data);
         return ret;
     }
 }
@@ -357,7 +358,7 @@ static int cmd_polling_pub(int argc, char **argv)
 
     /* step 1: get topic and device id */
     t.name = argv[1];
-
+    printf("%s", t.name);
     if (emcute_reg(&t) != EMCUTE_OK)
     {
         puts("error: unable to obtain topic ID");
@@ -403,8 +404,9 @@ static int cmd_polling_pub(int argc, char **argv)
         char *data = generate_value(device);
         printf("Device %s push data: %s\n", device, data);
         printf("========================================\n");
-
+        t.name = device;
         xtimer_sleep(1.5);
+    /* step 2: publish data */
 
         if (emcute_pub(&t, data, strlen(data), flags) != EMCUTE_OK)
         {
@@ -414,7 +416,6 @@ static int cmd_polling_pub(int argc, char **argv)
 
         i--;
     }
-    /* step 2: publish data */
 
     printf("Published %i bytes to topic '%s [%i]'\n",
            (int)strlen(argv[2]), t.name, t.id);
