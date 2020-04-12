@@ -47,13 +47,13 @@ client = MQTTbridgeGoogle.get_client(
     project_id, cloud_region, registry_id,
     device_id, private_key_file, algorithm,
     ca_certs, mqtt_bridge_hostname, mqtt_bridge_port)
-S
+
 
 
 class Callback:
 
     def __init__(self):
-        self.events = []S
+        self.events = []
         self.registered = {}
 
     def connectionLost(self, cause):
@@ -162,7 +162,7 @@ class Client:
             else:
                 subscribe.Flags.TopicIdType = MQTTSN.TOPIC_SHORTNAME
         else:
-            subscribe.TopicId = topic  # should be int
+            subscribe.TopicId = topic 
             subscribe.Flags.TopicIdType = MQTTSN.TOPIC_PREDEFINED
         subscribe.Flags.QoS = qos
         if self.__receiver:
@@ -217,7 +217,7 @@ class Client:
         msg = self.waitfor(MQTTSN.DISCONNECT)
 
     def stopReceiver(self):
-        self.sock.close()  # this will stop the receiver too
+        self.sock.close()
         assert self.__receiver.inMsgs == {}
         assert self.__receiver.outMsgs == {}
         self.__receiver = None
