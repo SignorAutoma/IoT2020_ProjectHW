@@ -14,7 +14,7 @@ ________________________________________________________________________________
 
 [Hackster.io Tutorial - FIRST ASSIGNMENT](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-f30ccf)
 _____________________________________________________________________________________________________________________________
-[Youtube Video Presentation - SECOND ASSIGNMENT](https://www.youtube.com/watch?v=rRAg-Kg9FS4)
+[Youtube Video Presentation - SECOND ASSIGNMENT](https://www.youtube.com/watch?v=3SWoG__7ybM&list=PLNyABN6UZOFlzKVPhlynjhU8vFQ2H9BMs&index=2)
 
 [Hackster.io Tutorial - SECOND ASSIGNMENT](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-riot-mqtt-interaction-35fc61)
 
