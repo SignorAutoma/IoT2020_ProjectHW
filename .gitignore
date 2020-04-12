@@ -105,3 +105,5 @@ dist
 
 rsa_cert.pem
 rsa_private.pem
+./MQTTSNClient/roots.pem
+./MQTTSNClient/rsa_private.pem

@@ -1,2 +1,0 @@
-[projects/signorautoma-iot/subscriptions/first-assignment]
-[projects/signorautoma-iot/topics/first-assignment]
