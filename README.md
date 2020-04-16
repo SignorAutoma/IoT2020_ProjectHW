@@ -5,6 +5,9 @@
 Simple implementation of a IoT cloud based system, that system will collects information from a set of virtual environmental sensors using the MQTT protocol and Google Cloud IoT. 
 #### Second assignment.
 In this part we are going to change the node.js virtual sensor with a RIOT application that comunicate through MQTTSN, in order to develop it we build an MQTTSN/MQTT broker system.
+#### Third assignment.
+In this section we will build on-top of the cloud based system developed in the previously parts. Now the virtual environmental station, running on RIOT, will publish random value to The Things Network through LoRaWAN, then we develop a bridge between the MQTT broker of TTN and the Google Cloud based infrastructure.
+The RIOT-OS application will be deployed on IOT-LAB in different nodes to test the system through real-world devices.
 
 ## Links
 Some usefull links to explain the project:
