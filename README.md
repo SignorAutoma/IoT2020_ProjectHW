@@ -1,4 +1,4 @@
-# IoT2020_ProjectHW
+# Google Cloud-based IoT System
 ### This project is intended to be integrant part of IoT class at Sapienza - University of Rome.
 
 #### First assignment.
