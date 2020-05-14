@@ -1,10 +1,13 @@
 const http = require('http');
 const express = require('express');
-const template = __dirname + '/views/index.ejs';
+const index = __dirname + '/views/index.ejs';
+const crowdSensing = __dirname + '/views/crowd_sensing.ejs';
+
 const app = express();
 var io = require('socket.io');
 var server = http.createServer(app);
 var listener = io.listen(server);
+let fs = require('fs');
 const mongoose = require('mongoose');
 const Data = require('./models/data.model');
 
@@ -168,9 +171,12 @@ app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));
 app.set('view engine', 'ejs');
 
 app.get('/', function (req, res) {
-  res.render(template, { header, log });
+  res.render(index, { header, log });
 });
 
+app.get('/crowdSensing', function (req, res) {
+  res.render(crowdSensing, { header, log });
+});
 
 listener.on('connection', function (socket) {
 
