@@ -12,7 +12,7 @@
             let accelerometer = null;
             try {
                 accelerometer = new Accelerometer({ referenceFrame: 'device' });
-                console.log(accelerometer);
+                console.log("accelerometer:" + accelerometer);
 
                 accelerometer.addEventListener('error', event => {
                     // Handle runtime errors.
