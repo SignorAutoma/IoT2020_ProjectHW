@@ -5,19 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  
+
 
     <script>
         window.onload = () => {
             let accelerometer = null;
+            var device = document.getElementById("device");
+            var info = document.getElementById("info");
+            var x = document.getElementById("x");
+            var y = document.getElementById("y");
+            var z = document.getElementById("z");
+            var status = document.getElementById("status");
             try {
-                accelerometer = new Accelerometer({ referenceFrame: 'device' });
+                // define a linear acceleration sensor with frequency 1Hz (we are going to exclude the acceleration caused by gravity g)
+                accelerometer = new LinearAccelerationSensor({ referenceFrame: 'device', frequency: 1 });
                 console.log("accelerometer:" + accelerometer);
+
 
                 accelerometer.addEventListener('error', event => {
                     // Handle runtime errors.
                     if (event.error.name === 'NotAllowedError') {
-                        // Branch to code for requesting permission.
+                        device.innerHTML = "We are not allowed to read your sensor.";
+                        info.innerHTML = "You need to allow the motion sensor on your browser";
                     } else if (event.error.name === 'NotReadableError') {
                         console.log('Cannot connect to the sensor.');
                     }
@@ -26,14 +35,30 @@
                 accelerometer.start();
 
                 accelerometer.onreading = () => {
-                    document.getElementById("x").innerHTML = "x: " + accelerometer.x;
-                    document.getElementById("y").innerHTML = "y: " + accelerometer.y;
-                    document.getElementById("z").innerHTML = "z: " + accelerometer.z;
+                    x.innerHTML = "x: " + accelerometer.x;
+                    y.innerHTML = "y: " + accelerometer.y;
+                    z.innerHTML = "z: " + accelerometer.z;
+
+                    //compute delta of the movement
+                    delta = Math.sqrt(accelerometer.x * accelerometer.x + accelerometer.y * accelerometer.y + accelerometer.z * accelerometer.z);
+
+                    delta > 0.7? status.innerHTML = "Walking" : status.innerHTML = "Resting"
                 }
 
                 accelerometer.onerror = event => console.log(event.error.name, event.error.message)
 
             } catch (error) {
+                if (error.name === "ReferenceError") {
+                    console.log("This device is not supported!");
+
+                    device.innerHTML = "Device not supported";
+                    info.innerHTML = "try with a smartphone";
+                    device.style.color = "#FF0000"
+                }
+                else {
+                    device.innerHTML = "Unexpected error";
+                    device.style.color = "#FF0000"
+                }
                 console.log(error);
             }
 
@@ -42,7 +67,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
-   
+
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -76,13 +101,16 @@
         <h5>
             Retriving data from Smartphone
         </h5>
-        
+
         <div class="card" style="text-align:center; margin-top: 40px;">
             <div class="card-body">
-                <h5 class="card-title">Smartphone </h5>
-                <p class="card-text" id='x'></p>
-                <p class="card-text" id='y'></p>
-                <p class="card-text" id='z'></p>
+                <h4 class="card-title" id='device' style="color:darkred"></h4>
+                <h5 class="card-text" id='info'></h5>
+                <h6 class="card-text" id="status">
+                    </h5>
+                    <p class="card-text" id='x'></p>
+                    <p class="card-text" id='y'></p>
+                    <p class="card-text" id='z'></p>
             </div>
         </div>
     </div>

@@ -4,7 +4,8 @@
   "description": "Simple HTML logger for IoT project",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -29,5 +30,8 @@
     "mongoose": "^5.9.6",
     "mongoose-paginate": "^5.0.3",
     "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
