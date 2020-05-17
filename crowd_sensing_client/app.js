@@ -148,7 +148,6 @@ listener.on('connection', function (socket) {
 
 
   socket.on('data', function (data) {
-    console.log("new data: " + JSON.parse(data));
     var accelerometer = data.accelerometer;
     var status = data.status;
     publishAsync(mqttTopic, client, status)
