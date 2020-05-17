@@ -47,8 +47,11 @@
 
                     delta > 0.7 ? (moving = true, status.innerHTML = "Walking") : (moving = false, status.innerHTML = "Resting");
 
+                    console.log("send data: " + accelerometer);
+                    
                     socket.emit('data', { accelerometer: accelerometer, status: status });
-
+                    
+                    socket.close();
                 }
 
                 accelerometer.onerror = event => console.log(event.error.name, event.error.message)
