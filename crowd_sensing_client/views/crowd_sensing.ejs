@@ -9,7 +9,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         function retriveData() {
-            var socket = io.connect('http://localhost:8888');
+            var socket = io();
             socket.emit('data', "init");
 
             let accelerometer = null;
