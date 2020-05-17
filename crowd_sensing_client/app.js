@@ -35,12 +35,9 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
 });
 
 function publishAsync(socket) {
-  console.log("bella");
-  while(1) {
-    socket.on('data', function (data) {
-      console.log("new data");
-    });
-  }
+  socket.on('data', function (data) {
+    console.log("new data: " + data);
+  });
 }
 
 app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));
@@ -59,8 +56,8 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
 
-  publishAsync(socket)
-  
+  publishAsync(socket);
+
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');
