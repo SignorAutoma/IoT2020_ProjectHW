@@ -22,6 +22,7 @@
                 // define a linear acceleration sensor with frequency 1Hz (we are going to exclude the acceleration caused by gravity g)
                 accelerometer = new LinearAccelerationSensor({ referenceFrame: 'device', frequency: 1 });
                 console.log("accelerometer:" + accelerometer);
+                socket.emit('data', "init");
 
                 accelerometer.addEventListener('error', event => {
                     // Handle runtime errors.
@@ -40,7 +41,7 @@
                     y.innerHTML = "y: " + accelerometer.y;
                     z.innerHTML = "z: " + accelerometer.z;
                     
-                    socket.emit('data', {accelerometer});
+                    socket.emit('data', accelerometer);
 
                     //compute delta of the movement
                     delta = Math.sqrt(accelerometer.x * accelerometer.x + accelerometer.y * accelerometer.y + accelerometer.z * accelerometer.z);
