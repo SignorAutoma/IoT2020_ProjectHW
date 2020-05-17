@@ -1,25 +1,17 @@
 {
-  "name": "web",
+  "name": "crowd_sensing_client",
   "version": "1.0.0",
-  "description": "Simple HTML logger for IoT project",
-  "main": "/crowd_sensing_client/app.js",
+  "description": "Simple HTML crowd sensing page",
+  "main": "app.js",
   "scripts": {
-    "start": "node crowd_sensing_client\\app.js",
+    "start": "node app.js",
     "dev": "nodemon app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SignorAutoma/IoT2020_ProjectHW.git"
   },
   "keywords": [
     "IoT"
   ],
   "author": "Fabio Caputo",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SignorAutoma/IoT2020_ProjectHW/issues"
-  },
-  "homepage": "https://github.com/SignorAutoma/IoT2020_ProjectHW#readme",
   "dependencies": {
     "@google-cloud/pubsub": "^1.6.0",
     "@google-cloud/storage": "^4.6.0",

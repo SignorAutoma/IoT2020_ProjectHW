@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+    <script>
+        window.onload = () => {
+            let accelerometer = null;
+            var device = document.getElementById("device");
+            var info = document.getElementById("info");
+            var x = document.getElementById("x");
+            var y = document.getElementById("y");
+            var z = document.getElementById("z");
+            var status = document.getElementById("status");
+            try {
+                // define a linear acceleration sensor with frequency 1Hz (we are going to exclude the acceleration caused by gravity g)
+                accelerometer = new LinearAccelerationSensor({ referenceFrame: 'device', frequency: 1 });
+                console.log("accelerometer:" + accelerometer);
+
+
+                accelerometer.addEventListener('error', event => {
+                    // Handle runtime errors.
+                    if (event.error.name === 'NotAllowedError') {
+                        device.innerHTML = "We are not allowed to read your sensor.";
+                        info.innerHTML = "You need to allow the motion sensor on your browser";
+                    } else if (event.error.name === 'NotReadableError') {
+                        console.log('Cannot connect to the sensor.');
+                    }
+                });
+
+                accelerometer.start();
+
+                accelerometer.onreading = () => {
+                    x.innerHTML = "x: " + accelerometer.x;
+                    y.innerHTML = "y: " + accelerometer.y;
+                    z.innerHTML = "z: " + accelerometer.z;
+
+                    //compute delta of the movement
+                    delta = Math.sqrt(accelerometer.x * accelerometer.x + accelerometer.y * accelerometer.y + accelerometer.z * accelerometer.z);
+
+                    delta > 0.7? status.innerHTML = "Walking" : status.innerHTML = "Resting"
+                }
+
+                accelerometer.onerror = event => console.log(event.error.name, event.error.message)
+
+            } catch (error) {
+                if (error.name === "ReferenceError") {
+                    console.log("This device is not supported!");
+
+                    device.innerHTML = "Device not supported";
+                    info.innerHTML = "try with a smartphone";
+                    device.style.color = "#FF0000"
+                }
+                else {
+                    device.innerHTML = "Unexpected error";
+                    device.style.color = "#FF0000"
+                }
+                console.log(error);
+            }
+
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>IoT Server</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">IoT Server</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="./">Dashboard <a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="crowdSensing">Crowd Sensing <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div id="mainContent" style="text-align:center;">
+        <h1>IoT Cloud Dashboard</h1>
+        <h5>
+            Retriving data from Smartphone
+        </h5>
+
+        <div class="card" style="text-align:center; margin-top: 40px;">
+            <div class="card-body">
+                <h4 class="card-title" id='device' style="color:darkred"></h4>
+                <h5 class="card-text" id='info'></h5>
+                <h6 class="card-text" id="status">
+                    </h5>
+                    <p class="card-text" id='x'></p>
+                    <p class="card-text" id='y'></p>
+                    <p class="card-text" id='z'></p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

@@ -61,7 +61,7 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
     console.error('ERROR:\n\nDATABASE NON RAGGIUNGIBILE\n' + JSON.stringify(err));
     console.error(err);
   } else {
-    console.log('DEBUG: CONNESSO AL DATABASE ');
+    console.log('DEBUG: CONNESSO AL DATABASE - Dashboard');
 
     var lastHour = new Date();
     lastHour.setHours(lastHour.getHours()-1);
