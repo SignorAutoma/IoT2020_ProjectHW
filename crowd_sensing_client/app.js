@@ -13,15 +13,15 @@ const mqtt = require('mqtt');
 
 //#region Config HUMIDITY
 
-const projectId = `signorautoma-iot`;
-const deviceId = `accelerometer`;
-const registryId = `first-assignment`;
-const region = `europe-west1`;
+const projectId = 'signorautoma-iot';
+const deviceId = 'accelerometer';
+const registryId = 'first-assignment';
+const region = 'europe-west1';
 const algorithm = 'RS256';
-const privateKeyFile = `./rsa_private.pem`;
-const mqttBridgeHostname = `mqtt.googleapis.com`;
+const privateKeyFile = '../rsa_private.pem';
+const mqttBridgeHostname = 'mqtt.googleapis.com';
 const mqttBridgePort = 8883;
-const messageType = `events`;
+const messageType = 'events';
 const numMessages = 5;
 //#endregion
 

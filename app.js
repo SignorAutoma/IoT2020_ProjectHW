@@ -49,6 +49,11 @@ let log = [
     lastValue: '',
     values: [],
   },
+  {
+    device: 'accelerometer',
+    lastValue: '',
+    values: [],
+  }
 ]
 
 // CONNESSIONE AL DATABASE
@@ -64,9 +69,9 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
     console.log('DEBUG: CONNESSO AL DATABASE - Dashboard');
 
     var lastHour = new Date();
-    lastHour.setHours(lastHour.getHours()-1);
-    
-    Data.find({ "createdAt":{$gt: lastHour} })
+    lastHour.setHours(lastHour.getHours() - 1);
+
+    Data.find({ "createdAt": { $gt: lastHour } })
       .then(values => {
         console.log(values);
         for (i = 0; i < values.length; i++) {
@@ -87,9 +92,13 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
             log[3].lastValue = values[i]._doc.value;
             log[3].values.push(values[i]._doc.value);
           }
-          else {
+          else if (values[i]._doc.device == "rain-height"){
             log[4].lastValue = values[i]._doc.value;
             log[4].values.push(values[i]._doc.value);
+          }
+          else { //accelerometer
+            log[5].lastValue = values[i]._doc.value;
+            log[5].values.push(values[i]._doc.value);
           }
         }
       })
@@ -144,13 +153,21 @@ function listenForMessages(socket) {
         socket.emit('wi_lastValue', log[3].lastValue);
         socket.emit('wi_values', log[3].values);
       }
-      else {
+      else if (device == "") {
         log[4].lastValue = value;
         log[4].values.push(value);
         socket.emit('rh_lastValue', log[4].lastValue);
         socket.emit('rh_values', log[4].values);
       }
-
+      else {
+        log[5].lastValue = value;
+        log[5].values.push(value);
+        socket.emit('accelerometer', log[5].lastValue);
+        socket.emit('accelerometer', log[5].lastValue);
+      }
+    }
+    else {
+      console.log("Invalid Data");
     }
 
     messageCount += 1;
