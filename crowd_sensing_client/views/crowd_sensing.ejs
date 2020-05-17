@@ -8,7 +8,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        window.onload = () => {
+        function retriveData() {
             var socket = io.connect('http://localhost:8888');
             socket.emit('data', "init");
 
@@ -40,13 +40,13 @@
                     x.innerHTML = "x: " + accelerometer.x;
                     y.innerHTML = "y: " + accelerometer.y;
                     z.innerHTML = "z: " + accelerometer.z;
-                    
+
                     socket.emit('data', accelerometer);
 
                     //compute delta of the movement
                     delta = Math.sqrt(accelerometer.x * accelerometer.x + accelerometer.y * accelerometer.y + accelerometer.z * accelerometer.z);
 
-                    delta > 0.7? status.innerHTML = "Walking" : status.innerHTML = "Resting"
+                    delta > 0.7 ? status.innerHTML = "Walking" : status.innerHTML = "Resting"
                 }
 
                 accelerometer.onerror = event => console.log(event.error.name, event.error.message)
@@ -65,8 +65,8 @@
                 }
                 console.log(error);
             }
-
         }
+
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -79,7 +79,7 @@
     <title>IoT Client</title>
 </head>
 
-<body>
+<body onload=retriveData()>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">IoT Client</a>
