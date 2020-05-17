@@ -2,7 +2,7 @@
   "name": "web",
   "version": "1.0.0",
   "description": "Simple HTML logger for IoT project",
-  "main": "/crowd_sensing_client/app.js",
+  "main": "${workspaceFolder}\\app.js",
   "scripts": {
     "start": "node crowd_sensing_client\\app.js",
     "dev": "nodemon app.js"
