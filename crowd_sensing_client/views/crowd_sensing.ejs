@@ -10,7 +10,6 @@
     <script>
         function retriveData() {
             var socket = io();
-            socket.emit('data', "init");
 
             let accelerometer = null;
             var device = document.getElementById("device");
@@ -19,6 +18,7 @@
             var y = document.getElementById("y");
             var z = document.getElementById("z");
             var status = document.getElementById("status");
+            var moving = false;
             try {
                 // define a linear acceleration sensor with frequency 1Hz (we are going to exclude the acceleration caused by gravity g)
                 accelerometer = new LinearAccelerationSensor({ referenceFrame: 'device', frequency: 1 });
@@ -41,12 +41,14 @@
                     y.innerHTML = "y: " + accelerometer.y;
                     z.innerHTML = "z: " + accelerometer.z;
 
-                    socket.emit('data', accelerometer);
 
                     //compute delta of the movement
                     delta = Math.sqrt(accelerometer.x * accelerometer.x + accelerometer.y * accelerometer.y + accelerometer.z * accelerometer.z);
 
-                    delta > 0.7 ? status.innerHTML = "Walking" : status.innerHTML = "Resting"
+                    delta > 0.7 ? (moving = true, status.innerHTML = "Walking") : (moving = false, status.innerHTML = "Resting");
+
+                    socket.emit('data', { accelerometer: accelerometer, status: status });
+
                 }
 
                 accelerometer.onerror = event => console.log(event.error.name, event.error.message)

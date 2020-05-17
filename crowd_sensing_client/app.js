@@ -10,6 +10,22 @@ let fs = require('fs');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
 
+
+//#region Config HUMIDITY
+
+const projectId = `signorautoma-iot`;
+const deviceId = `accelerometer`;
+const registryId = `first-assignment`;
+const region = `europe-west1`;
+const algorithm = 'RS256';
+const privateKeyFile = `./rsa_private.pem`;
+const mqttBridgeHostname = `mqtt.googleapis.com`;
+const mqttBridgePort = 8883;
+const messageType = `events`;
+const numMessages = 5;
+//#endregion
+
+
 console.log('Smartphone Connection');
 
 const mongoose = require('mongoose');
@@ -34,11 +50,85 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
   }
 });
 
-function publishAsync(socket) {
-  socket.on('data', function (data) {
-    console.log("new data: " + data);
-  });
-}
+// To authenticate to Cloud IoT Core, each device must prepare a JSON Web Token (JWT, RFC 7519).
+// JWTs are used for short-lived authentication between devices and the MQTT or HTTP bridges
+const createJwt = (projectId, privateKeyFile, algorithm) => {
+  // Create a JWT to authenticate this device. The device will be disconnected
+  // after the token expires, and will have to reconnect with a new token. The
+  // audience field should always be set to the GCP project id.
+  const token = {
+      iat: parseInt(Date.now() / 1000),
+      exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
+      aud: projectId,
+  };
+  const privateKey = fs.readFileSync(privateKeyFile);
+  return jwt.sign(token, privateKey, { algorithm: algorithm });
+};
+
+
+// The mqttClientId is a unique string that identifies this device.
+const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceId}`;
+
+const connectionArgs = {
+    host: mqttBridgeHostname,
+    port: mqttBridgePort,
+    clientId: mqttClientId,
+    username: 'unused',
+    password: createJwt(projectId, privateKeyFile, algorithm),
+    protocol: 'mqtts',
+    secureProtocol: 'TLSv1_2_method',
+};
+
+
+// Create a client, and connect to the Google MQTT bridge.
+const iatTime = parseInt(Date.now() / 1000);
+const client = mqtt.connect(connectionArgs);
+
+// Subscribe to the /devices/{device-id}/config topic to receive config updates. we are going to use QOS1
+client.subscribe(`/devices/${deviceId}/config`, { qos: 1 });
+
+// Subscribe to the /devices/{device-id}/commands/# topic to receive all
+client.subscribe(`/devices/${deviceId}/commands/#`, { qos: 0 });
+
+// The MQTT topic that this device will publish data to.
+const mqttTopic = `/devices/${deviceId}/${messageType}`;
+
+client.on('connect', success => {
+  try {
+      console.log('connect');
+      if (!success) {
+          console.log('Client not connected...');
+      } else {
+          console.log('Client connected...');
+      }
+  } catch (error) {
+      console.error(error);
+  }
+});
+
+
+client.on('close', () => {
+  console.log('close');
+  shouldBackoff = true;
+});
+
+client.on('error', err => {
+  console.log('error', err);
+});
+
+
+const publishAsync = (
+  mqttTopic,
+  client,
+  status,
+) => {
+  // Function that push the sensor value on Google Cloud
+  const payload = deviceId + ": " + status + ":"+"crowd_sensing";
+  // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
+  console.log('Publishing message:', payload);
+  client.publish(mqttTopic, payload, { qos: 1 });
+};
+
 
 app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));
 app.set('view engine', 'ejs');
@@ -56,8 +146,13 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
 
-  publishAsync(socket);
 
+  socket.on('data', function (data) {
+    console.log("new data: " + JSON.parse(data));
+    var accelerometer = data.accelerometer;
+    var status = data.status;
+    publishAsync(mqttTopic, client, status)
+  });
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');
