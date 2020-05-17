@@ -34,7 +34,8 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
   }
 });
 
-publishAsync = (socket) => {
+function publishAsync(socket) {
+  console.log("bella");
   while(1) {
     socket.on('data', function (data) {
       console.log("new data");
