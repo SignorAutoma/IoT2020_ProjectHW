@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-
+    <script src="/socket.io/socket.io.js"></script>
     <script>
         window.onload = () => {
+            var socket = io.connect('http://localhost:8888');
+
             let accelerometer = null;
             var device = document.getElementById("device");
             var info = document.getElementById("info");
@@ -20,7 +22,6 @@
                 // define a linear acceleration sensor with frequency 1Hz (we are going to exclude the acceleration caused by gravity g)
                 accelerometer = new LinearAccelerationSensor({ referenceFrame: 'device', frequency: 1 });
                 console.log("accelerometer:" + accelerometer);
-
 
                 accelerometer.addEventListener('error', event => {
                     // Handle runtime errors.
@@ -38,6 +39,8 @@
                     x.innerHTML = "x: " + accelerometer.x;
                     y.innerHTML = "y: " + accelerometer.y;
                     z.innerHTML = "z: " + accelerometer.z;
+                    
+                    socket.emit('data', {accelerometer});
 
                     //compute delta of the movement
                     delta = Math.sqrt(accelerometer.x * accelerometer.x + accelerometer.y * accelerometer.y + accelerometer.z * accelerometer.z);
@@ -72,22 +75,19 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>IoT Server</title>
+    <title>IoT Client</title>
 </head>
 
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">IoT Server</a>
+        <a class="navbar-brand" href="#">IoT Client</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="./">Dashboard <a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="crowdSensing">Crowd Sensing <span class="sr-only">(current)</span></a>
                 </li>

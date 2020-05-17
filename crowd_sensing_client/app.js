@@ -7,20 +7,13 @@ var io = require('socket.io');
 var server = http.createServer(app);
 var listener = io.listen(server);
 let fs = require('fs');
+const jwt = require('jsonwebtoken');
+const mqtt = require('mqtt');
+
+console.log('Smartphone Connection');
+
 const mongoose = require('mongoose');
-const Data = require('./models/data.model');
 
-const { PubSub } = require('@google-cloud/pubsub');
-const projectId = "signorautoma-iot";
-const timeout = 180;
-const pubSubClient = new PubSub(projectId);
-const subscriptionName = 'projects/signorautoma-iot/subscriptions/first-assignment';
-
-const header = {
-  title: "Google Cloud-based IoT system dashboard",
-  info: "Retriving data from a set of virtual environmental sensors",
-  author: "By Fabio Caputo, 1695402"
-}
 
 
 // CONNESSIONE AL DATABASE
@@ -36,23 +29,33 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
     console.log('DEBUG: CONNESSO AL DATABASE - Crowd');
 
     var lastHour = new Date();
-    lastHour.setHours(lastHour.getHours()-1);
-    
+    lastHour.setHours(lastHour.getHours() - 1);
+
   }
 });
 
+publishAsync = (data) => {
+  console.log(data);
+}
 
 app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));
 app.set('view engine', 'ejs');
 
 app.get('/', function (req, res) {
-  res.render(crowdSensing, { header });
+  res.render(crowdSensing);
 });
 
+app.get('/crowdSensing', function (req, res) {
+  res.render(crowdSensing);
+});
 
 listener.on('connection', function (socket) {
 
   console.log('Connection to client established - Crowd');
+
+  socket.on('data', function (data) {
+    publishAsync(data)
+  });
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');

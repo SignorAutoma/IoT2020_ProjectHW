@@ -182,7 +182,6 @@ listener.on('connection', function (socket) {
 
   console.log('Connection to client established');
 
-
   listenForMessages(socket)
 
   socket.on('disconnect', function () {
