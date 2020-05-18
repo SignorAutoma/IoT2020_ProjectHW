@@ -58,7 +58,7 @@
 
                     console.log("send data: " + accelerometer);
 
-                    socket.emit('data', { accelerometer: accelerometer, status: status });
+                    socket.emit('data', { x: accelerometer.x, z: accelerometer.x, z: accelerometer.z, status: moving });
 
                 }
 
