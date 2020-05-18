@@ -11,17 +11,17 @@ const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
 
 
-//#region Config HUMIDITY
+//#region Config ACCELEROMETER
 
-const projectId = 'signorautoma-iot';
-const deviceId = 'accelerometer';
-const registryId = 'first-assignment';
-const region = 'europe-west1';
+const projectId = `signorautoma-iot`;
+const deviceId = `accelerometer`;
+const registryId = `generic-test`;
+const region = `us-central1`;
 const algorithm = 'RS256';
-const privateKeyFile = './rsa_private.pem';
-const mqttBridgeHostname = 'mqtt.googleapis.com';
+const privateKeyFile = `./rsa_private.pem`;
+const mqttBridgeHostname = `mqtt.googleapis.com`;
 const mqttBridgePort = 8883;
-const messageType = 'events';
+const messageType = `events`;
 const numMessages = 5;
 //#endregion
 
@@ -113,7 +113,25 @@ client.on('close', () => {
 });
 
 client.on('error', err => {
+
   console.log('error', err);
+  
+});
+
+client.on('message', (topic, message) => {
+  let messageStr = 'Message received: ';
+  if (topic === `/devices/${deviceId}/config`) {
+      messageStr = 'Config message received: ';
+  } else if (topic.startsWith(`/devices/${deviceId}/commands`)) {
+      messageStr = 'Command message received: ';
+  }
+
+  messageStr += Buffer.from(message, 'base64').toString('ascii');
+  console.log(messageStr);
+});
+
+client.on('packetsend', () => {
+  // Note: logging packet send is very verbose
 });
 
 
@@ -145,13 +163,13 @@ listener.on('connection', function (socket) {
 
   console.log('Connection to client established - Crowd');
 
-
-
   socket.on('data', function (data) {
     var accelerometer = data.accelerometer;
     var status = data.status;
+    console.log(accelerometer);
+    console.log(status);
     publishAsync(mqttTopic, client, status)
-  });
+  }); 
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');
