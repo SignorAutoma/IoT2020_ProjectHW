@@ -15,7 +15,7 @@ const { PubSub } = require('@google-cloud/pubsub');
 const projectId = "signorautoma-iot";
 const timeout = 180;
 const pubSubClient = new PubSub(projectId);
-const subscriptionName = 'projects/signorautoma-iot/subscriptions/first-assignment';
+const subscriptionName = 'projects/signorautoma-iot/subscriptions/generic-test';
 
 const header = {
   title: "Google Cloud-based IoT system dashboard",
