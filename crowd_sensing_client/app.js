@@ -138,10 +138,10 @@ client.on('packetsend', () => {
 const publishAsync = (
   mqttTopic,
   client,
-  status,
+  data,
 ) => {
   // Function that push the sensor value on Google Cloud
-  const payload = deviceId + ": " + status + ":"+"crowd_sensing";
+  const payload = deviceId + ":" + data.status + ":"+"crowd_sensing";
   // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
   console.log('Publishing message:', payload);
   client.publish(mqttTopic, payload, { qos: 1 });
@@ -170,7 +170,7 @@ listener.on('connection', function (socket) {
     var status = data.status;
     console.log(accelerometer);
     console.log(status);
-    publishAsync(mqttTopic, client, status)
+    publishAsync(mqttTopic, client, data)
   }); 
 
   socket.on('disconnect', function () {
