@@ -164,7 +164,10 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
-    var accelerometer = JSON.stringify(data.accelerometer);
+    var x = JSON.stringify(data.x);
+    var y = JSON.stringify(data.y);
+    var z = JSON.stringify(data.z);
+
     var status = JSON.stringify(data.status);
     data = JSON.stringify(data);
     console.log(data);
