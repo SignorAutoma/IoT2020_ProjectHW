@@ -164,10 +164,10 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
+    var accelerometer = JSON.stringify(data.accelerometer);
+    var status = JSON.stringify(data.status);
     data = JSON.stringify(data);
     console.log(data);
-    var accelerometer = data.accelerometer;
-    var status = data.status;
     console.log(accelerometer);
     console.log(status);
     publishAsync(mqttTopic, client, data)
