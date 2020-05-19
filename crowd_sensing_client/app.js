@@ -57,9 +57,9 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
   // after the token expires, and will have to reconnect with a new token. The
   // audience field should always be set to the GCP project id.
   const token = {
-      iat: parseInt(Date.now() / 1000),
-      exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
-      aud: projectId,
+    iat: parseInt(Date.now() / 1000),
+    exp: parseInt(Date.now() / 1000) + 20 * 60, // 20 minutes
+    aud: projectId,
   };
   const privateKey = fs.readFileSync(privateKeyFile);
   return jwt.sign(token, privateKey, { algorithm: algorithm });
@@ -70,13 +70,13 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
 const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceId}`;
 
 const connectionArgs = {
-    host: mqttBridgeHostname,
-    port: mqttBridgePort,
-    clientId: mqttClientId,
-    username: 'unused',
-    password: createJwt(projectId, privateKeyFile, algorithm),
-    protocol: 'mqtts',
-    secureProtocol: 'TLSv1_2_method',
+  host: mqttBridgeHostname,
+  port: mqttBridgePort,
+  clientId: mqttClientId,
+  username: 'unused',
+  password: createJwt(projectId, privateKeyFile, algorithm),
+  protocol: 'mqtts',
+  secureProtocol: 'TLSv1_2_method',
 };
 
 
@@ -95,14 +95,14 @@ const mqttTopic = `/devices/${deviceId}/${messageType}`;
 
 client.on('connect', success => {
   try {
-      console.log('connect');
-      if (!success) {
-          console.log('Client not connected...');
-      } else {
-          console.log('Client connected...');
-      }
+    console.log('connect');
+    if (!success) {
+      console.log('Client not connected...');
+    } else {
+      console.log('Client connected...');
+    }
   } catch (error) {
-      console.error(error);
+    console.error(error);
   }
 });
 
@@ -115,15 +115,15 @@ client.on('close', () => {
 client.on('error', err => {
 
   console.log('error', err);
-  
+
 });
 
 client.on('message', (topic, message) => {
   let messageStr = 'Message received: ';
   if (topic === `/devices/${deviceId}/config`) {
-      messageStr = 'Config message received: ';
+    messageStr = 'Config message received: ';
   } else if (topic.startsWith(`/devices/${deviceId}/commands`)) {
-      messageStr = 'Command message received: ';
+    messageStr = 'Command message received: ';
   }
 
   messageStr += Buffer.from(message, 'base64').toString('ascii');
@@ -141,7 +141,12 @@ const publishAsync = (
   data,
 ) => {
   // Function that push the sensor value on Google Cloud
-  const payload = deviceId + ":" + data.status + ":"+"crowd_sensing";
+  var status = JSON.stringify(data.status);
+  var x = JSON.stringify(data.x);
+  var y = JSON.stringify(data.y);
+  var z = JSON.stringify(data.z);
+  console.log("x: " + x + " y: " + y + " z:" + z + " ======> " + status);
+  const payload = deviceId + ":" + status + ":" + "crowd_sensing";
   // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
   console.log('Publishing message:', payload);
   client.publish(mqttTopic, payload, { qos: 1 });
@@ -164,17 +169,8 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
-    var x = JSON.stringify(data.x);
-    var y = JSON.stringify(data.y);
-    var z = JSON.stringify(data.z);
-
-    var status = JSON.stringify(data.status);
-    data = JSON.stringify(data);
-    console.log(data);
-    console.log(accelerometer);
-    console.log(status);
     publishAsync(mqttTopic, client, data)
-  }); 
+  });
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');
