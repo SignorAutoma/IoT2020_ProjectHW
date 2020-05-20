@@ -98,17 +98,17 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
             log[3].lastValue = values[i]._doc.value;
             log[3].values.push(values[i]._doc.value);
           }
-          else if (values[i]._doc.device == "rain-height"){
+          else if (values[i]._doc.device == "rain-height") {
             log[4].lastValue = values[i]._doc.value;
             log[4].values.push(values[i]._doc.value);
           }
-          else if(values[i]._doc.device == "accelerometer"){ //accelerometer - edge
-            log[5].lastValue = values[i]._doc.value == "true"? "Walking" : "Resting";
-            log[5].values.push(values[i]._doc.value == "true"? "Walking " : "Resting ");
+          else if (values[i]._doc.device == "accelerometer") { //accelerometer - edge
+            log[5].lastValue = values[i]._doc.value == "true" ? "Walking" : "Resting";
+            log[5].values.push(values[i]._doc.value == "true" ? "Walking " : "Resting ");
           }
           else {
-            log[6].lastValue = values[i]._doc.value? "Walking" : "Resting";
-            log[6].values.push(values[i]._doc.value? "Walking " : "Resting ");
+            log[6].lastValue = values[i]._doc.value ? "Walking" : "Resting";
+            log[6].values.push(values[i]._doc.value ? "Walking " : "Resting ");
           }
         }
       })
@@ -169,7 +169,7 @@ function listenForMessages(socket) {
   // References an existing subscription
   const subscription = pubSubClient.subscription(subscriptionName);
   // Create an event handler to handle messages
-  let messageCount = 0; 
+  let messageCount = 0;
   const messageHandler = message => {
     console.log(`Received message ${message.id}:`);
     console.log(`\tData: ${message.data}`);
@@ -177,7 +177,8 @@ function listenForMessages(socket) {
     var data = `${message.data}`.split(":");
     if (data != null) {
       var device = data[0].toString();
-      var value = data[0] != "accelerometer_cloud"? data[1].toString() : data[1];
+      var x, y, z;
+      var value = data[0] != "accelerometer_cloud" ? data[1].toString() : (x = data[1], y = data[2], z = data[3]);
 
       new Data
         ({
@@ -223,12 +224,13 @@ function listenForMessages(socket) {
         socket.emit('accelerometer', log[5].lastValue);
         //socket.emit('accelerometer', log[5].values);
       }
-      else {
+      else if (device == "accelerometer_cloud"){
         //Compute at cloud, if delta > 0.7 then user is moving N.B. Cloud functions
-        var delta = Math.sqrt(value.x * value.x + value.y * value.y + value.z * value.z);
+        var delta = Math.sqrt(x * x + y * y + z * z);
         log[6].lastValue = delta > 0.7
         socket.emit('accelerometer_cloud', log[6].lastValue);
       }
+      else { console.log("Invalid Device!")}
     }
     else {
       console.log("Invalid Data");

@@ -209,7 +209,7 @@ const publishCloud = (
   console.log("x: " + x + " y: " + y + " z:" + z);
 
 
-  const payload = deviceId + ":" + x + ":" + y + ":" + z + ":" + "crowd_sensing";
+  const payload = deviceIdCloud + ":" + x + ":" + y + ":" + z + ":" + "crowd_sensing";
   // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
   console.log('Publishing message:', payload);
   clientCloud.publish(mqttTopicCloud, payload, { qos: 1 });
