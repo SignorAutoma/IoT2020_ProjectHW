@@ -16,6 +16,7 @@ const projectId = "signorautoma-iot";
 const timeout = 180;
 const pubSubClient = new PubSub(projectId);
 const subscriptionName = 'projects/signorautoma-iot/subscriptions/generic-test';
+const subscriptionCloudFunction = 'projects/signorautoma-iot/subscriptions/generic-test-cf';
 
 const header = {
   title: "Google Cloud-based IoT system dashboard",
@@ -51,6 +52,11 @@ let log = [
   },
   {
     device: 'accelerometer',
+    lastValue: '',
+    values: [],
+  },
+  {
+    device: 'accelerometer_cloud',
     lastValue: '',
     values: [],
   }
@@ -96,9 +102,13 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
             log[4].lastValue = values[i]._doc.value;
             log[4].values.push(values[i]._doc.value);
           }
-          else { //accelerometer
-            log[5].lastValue = values[i]._doc.value;
-            log[5].values.push(values[i]._doc.value);
+          else if(values[i]._doc.device == "accelerometer"){ //accelerometer - edge
+            log[5].lastValue = values[i]._doc.value == "true"? "Walking" : "Resting";
+            log[5].values.push(values[i]._doc.value == "true"? "Walking " : "Resting ");
+          }
+          else {
+            log[6].lastValue = values[i]._doc.value? "Walking" : "Resting";
+            log[6].values.push(values[i]._doc.value? "Walking " : "Resting ");
           }
         }
       })
@@ -106,11 +116,9 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
 });
 
 
-
 function listenForMessages(socket) {
   // References an existing subscription
   const subscription = pubSubClient.subscription(subscriptionName);
-
   // Create an event handler to handle messages
   let messageCount = 0;
   const messageHandler = message => {
@@ -120,8 +128,9 @@ function listenForMessages(socket) {
     var data = `${message.data}`.split(":");
     if (data != null) {
       var device = data[0].toString();
+      //var value = data[0] != "accelerometer_cloud"? data[1].toString() : data[1];
       var value = data[1].toString();
-
+      
       new Data
         ({
           device: device,
@@ -153,17 +162,27 @@ function listenForMessages(socket) {
         socket.emit('wi_lastValue', log[3].lastValue);
         socket.emit('wi_values', log[3].values);
       }
-      else if (device == "") {
+      else if (device == "rain-heigh") {
         log[4].lastValue = value;
         log[4].values.push(value);
         socket.emit('rh_lastValue', log[4].lastValue);
         socket.emit('rh_values', log[4].values);
       }
-      else {
+      else if (device == "accelerometer") {
         log[5].lastValue = value;
         log[5].values.push(value);
         socket.emit('accelerometer', log[5].lastValue);
-        socket.emit('accelerometer', log[5].lastValue);
+        //socket.emit('accelerometer', log[5].values);
+      }
+      else {
+        /* var delta = Math.sqrt(value.x * value.x + value.y * value.y + value.z * value.z);
+        log[6].lastValue = delta > 0.7
+        socket.emit('accelerometer_cloud', log[6].lastValue); */
+
+        //Cloud Function test
+        log[6].lastValue = value;
+        log[6].values.push(value);
+        socket.emit('accelerometer_cloud', log[6].lastValue);
       }
     }
     else {
@@ -199,7 +218,8 @@ listener.on('connection', function (socket) {
 
   console.log('Connection to client established');
 
-  listenForMessages(socket)
+  listenForMessages(socket);
+  listenForMessagesCloud(socket);
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');

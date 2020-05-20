@@ -8,15 +8,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        function fuckapp() {
-
-            device.innerHTML = "Test Device";
-            info.innerHTML = "try with a smartphone";
-            device.style.color = "green"
-            while (1) {
-                socket.emit('data', { accelerometer: { x: 1, y: 1, z: 1 }, status: "walking" });
-            }
-        }
+       
         function retriveData() {
             var socket = io();
 

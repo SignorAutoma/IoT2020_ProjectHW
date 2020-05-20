@@ -14,7 +14,7 @@ const mqtt = require('mqtt');
 //#region Config ACCELEROMETER
 
 const projectId = `signorautoma-iot`;
-const deviceId = `accelerometer`;
+const deviceId = `accelerometer_cloud`;
 const registryId = `generic-test`;
 const region = `us-central1`;
 const algorithm = 'RS256';
@@ -152,6 +152,23 @@ const publishAsync = (
   client.publish(mqttTopic, payload, { qos: 1 });
 };
 
+const publishCloud = (
+  mqttTopic,
+  client,
+  data,
+) => {
+  // Function that push the sensor value on Google Cloud
+  var x = JSON.stringify(data.x);
+  var y = JSON.stringify(data.y);
+  var z = JSON.stringify(data.z);
+  console.log("x: " + x + " y: " + y + " z:" + z);
+
+
+  const payload = deviceId + ":" + JSON.stringify(data) + ":" + "crowd_sensing";
+  // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
+  console.log('Publishing message:', payload);
+  client.publish(mqttTopic, payload, { qos: 1 });
+};
 
 app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));
 app.set('view engine', 'ejs');
@@ -169,7 +186,8 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
-    publishAsync(mqttTopic, client, data)
+    //publishAsync(mqttTopic, client, data)
+    publishCloud(mqttTopic, client, data)
   });
 
   socket.on('disconnect', function () {

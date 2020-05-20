@@ -43,19 +43,26 @@
     <div id="mainContent" style="text-align:center;">
         <h1>IoT Cloud Dashboard</h1>
         <h5>
-            Data Retrived From Smartphone 
+            Data Retrived From Smartphone
         </h5>
     </div>
 
-    <div class="card"  style="text-align:center; margin-top: 40px;">
+    <div class="card" style="text-align:center; margin-top: 40px;">
         <div class="card-body">
-          <h5 class="card-title">Smartphone </h5>
-          <p class="card-text" id='t_lastValue'><%= log[5].lastValue %></p>
-          <p class="card-text" id='t_values'><%= log[5].values %></p>
-  
-        </div>
-      </div>
+            <h5 class="card-title">Accelerometer - Edge</h5>
+            <p class="card-text" id='t_lastValue'> <%= log[5].lastValue %> </p>
+            <p class="card-text" id='t_values'> <%= log[5].values %> </p>
 
+        </div>
+    </div>
+    <div class="card" style="text-align:center; margin-top: 40px;">
+        <div class="card-body">
+            <h5 class="card-title">Accelerometer - Cloud</h5>
+            <p class="card-text" id='t_lastValue'><%= log[6].lastValue %></p>
+            <p class="card-text" id='t_values'><%= log[6].values %></p>
+
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
