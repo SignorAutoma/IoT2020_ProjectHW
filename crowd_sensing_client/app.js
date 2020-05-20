@@ -23,6 +23,8 @@ const mqttBridgeHostname = `mqtt.googleapis.com`;
 const mqttBridgePort = 8883;
 const messageType = `events`;
 const numMessages = 5;
+const deviceIdCloud = `accelerometer_cloud`;
+
 //#endregion
 
 
@@ -68,6 +70,7 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
 
 // The mqttClientId is a unique string that identifies this device.
 const mqttClientId = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceId}`;
+const mqttClientIdCloud = `projects/${projectId}/locations/${region}/registries/${registryId}/devices/${deviceIdCloud}`;
 
 const connectionArgs = {
   host: mqttBridgeHostname,
@@ -79,19 +82,33 @@ const connectionArgs = {
   secureProtocol: 'TLSv1_2_method',
 };
 
+const connectionArgsCloud = {
+  host: mqttBridgeHostname,
+  port: mqttBridgePort,
+  clientId: mqttClientIdCloud,
+  username: 'unused',
+  password: createJwt(projectId, privateKeyFile, algorithm),
+  protocol: 'mqtts',
+  secureProtocol: 'TLSv1_2_method',
+};
+
 
 // Create a client, and connect to the Google MQTT bridge.
-const iatTime = parseInt(Date.now() / 1000);
+
 const client = mqtt.connect(connectionArgs);
+const clientCloud = mqtt.connect(connectionArgsCloud);
 
 // Subscribe to the /devices/{device-id}/config topic to receive config updates. we are going to use QOS1
 client.subscribe(`/devices/${deviceId}/config`, { qos: 1 });
+clientCloud.subscribe(`/devices/${deviceIdCloud}/config`, { qos: 1 });
 
 // Subscribe to the /devices/{device-id}/commands/# topic to receive all
 client.subscribe(`/devices/${deviceId}/commands/#`, { qos: 0 });
+clientCloud.subscribe(`/devices/${deviceIdCloud}/commands/#`, { qos: 0 });
 
 // The MQTT topic that this device will publish data to.
 const mqttTopic = `/devices/${deviceId}/${messageType}`;
+const mqttTopicCloud = `/devices/${deviceIdCloud}/${messageType}`;
 
 client.on('connect', success => {
   try {
@@ -99,7 +116,7 @@ client.on('connect', success => {
     if (!success) {
       console.log('Client not connected...');
     } else {
-      console.log('Client connected...');
+      console.log('Client connected - Edge...');
     }
   } catch (error) {
     console.error(error);
@@ -130,10 +147,35 @@ client.on('message', (topic, message) => {
   console.log(messageStr);
 });
 
-client.on('packetsend', () => {
+clientCloud.on('packetsend', () => {
   // Note: logging packet send is very verbose
 });
 
+
+clientCloud.on('connect', success => {
+  try {
+    console.log('connect to client for cloud computing');
+    if (!success) {
+      console.log('Client not connected...');
+    } else {
+      console.log('Client connected - Cloud...');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+
+clientCloud.on('close', () => {
+  console.log('close');
+  shouldBackoff = true;
+});
+
+clientCloud.on('error', err => {
+
+  console.log('error', err);
+
+});
 
 const publishAsync = (
   mqttTopic,
@@ -153,8 +195,8 @@ const publishAsync = (
 };
 
 const publishCloud = (
-  mqttTopic,
-  client,
+  mqttTopicCloud,
+  clientCloud,
   data,
 ) => {
   // Function that push the sensor value on Google Cloud
@@ -186,8 +228,8 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
-    //publishAsync(mqttTopic, client, data)
-    publishCloud(mqttTopic, client, data)
+    publishAsync(mqttTopic, client, data)
+    publishCloud(mqttTopicCloud, clientCloud, data)
   });
 
   socket.on('disconnect', function () {

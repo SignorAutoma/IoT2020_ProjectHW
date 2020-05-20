@@ -116,6 +116,7 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
 });
 
 
+
 function listenForMessages(socket) {
   // References an existing subscription
   const subscription = pubSubClient.subscription(subscriptionName);
@@ -128,9 +129,8 @@ function listenForMessages(socket) {
     var data = `${message.data}`.split(":");
     if (data != null) {
       var device = data[0].toString();
-      //var value = data[0] != "accelerometer_cloud"? data[1].toString() : data[1];
-      var value = data[1].toString();
-      
+      var value = data[0] != "accelerometer_cloud"? data[1].toString() : data[1];
+
       new Data
         ({
           device: device,
@@ -169,19 +169,16 @@ function listenForMessages(socket) {
         socket.emit('rh_values', log[4].values);
       }
       else if (device == "accelerometer") {
+        //Compute at edge, receive and push the value without computing at cloud
         log[5].lastValue = value;
         log[5].values.push(value);
         socket.emit('accelerometer', log[5].lastValue);
         //socket.emit('accelerometer', log[5].values);
       }
       else {
-        /* var delta = Math.sqrt(value.x * value.x + value.y * value.y + value.z * value.z);
+        //Compute at cloud, if delta > 0.7 then user is moving
+        var delta = Math.sqrt(value.x * value.x + value.y * value.y + value.z * value.z);
         log[6].lastValue = delta > 0.7
-        socket.emit('accelerometer_cloud', log[6].lastValue); */
-
-        //Cloud Function test
-        log[6].lastValue = value;
-        log[6].values.push(value);
         socket.emit('accelerometer_cloud', log[6].lastValue);
       }
     }
@@ -219,7 +216,6 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established');
 
   listenForMessages(socket);
-  listenForMessagesCloud(socket);
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');
