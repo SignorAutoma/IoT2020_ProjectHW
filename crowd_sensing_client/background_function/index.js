@@ -1,4 +1,4 @@
-const {PubSub} = require('@google-cloud/pubsub'); //0.21.1
+const {PubSub} = require('@google-cloud/pubsub');
 
 // Creates a client; cache this for further use
 const pubSubClient = new PubSub("signorautoma-iot");
@@ -22,7 +22,7 @@ exports.predict = async(data, context) => {
 
     var moving = delta > 0.7 ? "walking" : "resting";
     console.log(moving);
-    var message = device + ":" + delta > 0.7
+    var message = device + ":" + moving
 
     const topicName = "projects/signorautoma-iot/topics/generic-test"
     
@@ -32,7 +32,7 @@ exports.predict = async(data, context) => {
         }
     };
     const messageBuffer = Buffer.from(JSON.stringify(messageObj), 'utf8');
-   
+    console.log(messageObj);
     try {
         await pubSubClient.topic(topicName).publisher().publish(messageBuffer);
         console.log("Message sent!")

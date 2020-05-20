@@ -115,7 +115,7 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
   }
 });
 
-
+/* 
 function listenForMessagesCloud(socket) {
    // References an existing subscription
    const subscription = pubSubClient.subscription(subscriptionCloudFunction);
@@ -163,8 +163,9 @@ function listenForMessagesCloud(socket) {
      subscription.removeListener('message', messageHandler);
      console.log(`${messageCount} message(s) received.`);
    }, timeout * 1000);
-}
+} */
 function listenForMessages(socket) {
+  console.log("Init listening")
   // References an existing subscription
   const subscription = pubSubClient.subscription(subscriptionName);
   // Create an event handler to handle messages
@@ -262,8 +263,7 @@ listener.on('connection', function (socket) {
 
   console.log('Connection to client established');
 
-  //listenForMessages(socket);
-  listenForMessagesCloud(socket);
+  listenForMessages(socket); // BE computing
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');
