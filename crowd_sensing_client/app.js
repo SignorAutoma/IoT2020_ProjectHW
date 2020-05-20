@@ -14,7 +14,7 @@ const mqtt = require('mqtt');
 //#region Config ACCELEROMETER
 
 const projectId = `signorautoma-iot`;
-const deviceId = `accelerometer_cloud`;
+const deviceId = `accelerometer`;
 const registryId = `generic-test`;
 const region = `us-central1`;
 const algorithm = 'RS256';
