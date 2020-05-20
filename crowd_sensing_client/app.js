@@ -182,6 +182,8 @@ const publishAsync = (
   client,
   data,
 ) => {
+  console.log("Edge computing");
+
   // Function that push the sensor value on Google Cloud
   var status = JSON.stringify(data.status);
   var x = JSON.stringify(data.x);
@@ -195,21 +197,22 @@ const publishAsync = (
 };
 
 const publishCloud = (
-  mqttTopic,
-  client,
+  mqttTopicCloud,
+  clientCloud,
   data,
 ) => {
   // Function that push the sensor value on Google Cloud
   var x = JSON.stringify(data.x);
   var y = JSON.stringify(data.y);
   var z = JSON.stringify(data.z);
+  console.log("Cloud computing");
   console.log("x: " + x + " y: " + y + " z:" + z);
 
 
-  const payload = deviceId + ":" + JSON.stringify(data) + ":" + "crowd_sensing";
+  const payload = deviceId + ":" + x + ":" + y + ":" + z + ":" + "crowd_sensing";
   // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
   console.log('Publishing message:', payload);
-  client.publish(mqttTopic, payload, { qos: 1 });
+  clientCloud.publish(mqttTopicCloud, payload, { qos: 1 });
 };
 
 app.use(express.static(__dirname + '\\IoT_ProjectHW\\views'));

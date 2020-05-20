@@ -169,7 +169,7 @@ function listenForMessages(socket) {
   // References an existing subscription
   const subscription = pubSubClient.subscription(subscriptionName);
   // Create an event handler to handle messages
-  let messageCount = 0;
+  let messageCount = 0; 
   const messageHandler = message => {
     console.log(`Received message ${message.id}:`);
     console.log(`\tData: ${message.data}`);
