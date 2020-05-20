@@ -195,8 +195,8 @@ const publishAsync = (
 };
 
 const publishCloud = (
-  mqttTopicCloud,
-  clientCloud,
+  mqttTopic,
+  client,
   data,
 ) => {
   // Function that push the sensor value on Google Cloud
@@ -228,7 +228,7 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
-    publishAsync(mqttTopic, client, data)
+    //publishAsync(mqttTopic, client, data)
     publishCloud(mqttTopicCloud, clientCloud, data)
   });
 

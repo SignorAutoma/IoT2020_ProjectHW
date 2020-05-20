@@ -116,7 +116,54 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
 });
 
 
+function listenForMessagesCloud(socket) {
+   // References an existing subscription
+   const subscription = pubSubClient.subscription(subscriptionCloudFunction);
+   // Create an event handler to handle messages
+   let messageCount = 0;
+   const messageHandler = message => {
+     console.log(`Received message ${message.id}:`);
+     console.log(`\tData: ${message.data}`);
+ 
+     var data = `${message.data}`.split(":");
+     if (data != null) {
+       
+       var device = data[0].toString();
+       var value = data[1].toString();
+ 
+       new Data
+         ({
+           device: device,
+           value: value,
+           data: Date.now() / 1000
+         }).save();
 
+       if (device == "accelerometer_cloud") {
+         log[6].lastValue = value;
+         log[6].values.push(value);
+         socket.emit('accelerometer_cloud', log[6].lastValue);
+         //socket.emit('accelerometer', log[5].values);
+       }
+       else {
+         console.log("Something dosn't work...")
+       }
+     }
+     else {
+       console.log("Invalid Data");
+     }
+ 
+     messageCount += 1;
+     message.ack();
+   };
+ 
+   // Listen for new messages until timeout is hit
+   subscription.on('message', messageHandler);
+ 
+   setTimeout(() => {
+     subscription.removeListener('message', messageHandler);
+     console.log(`${messageCount} message(s) received.`);
+   }, timeout * 1000);
+}
 function listenForMessages(socket) {
   // References an existing subscription
   const subscription = pubSubClient.subscription(subscriptionName);
@@ -176,7 +223,7 @@ function listenForMessages(socket) {
         //socket.emit('accelerometer', log[5].values);
       }
       else {
-        //Compute at cloud, if delta > 0.7 then user is moving
+        //Compute at cloud, if delta > 0.7 then user is moving N.B. Cloud functions
         var delta = Math.sqrt(value.x * value.x + value.y * value.y + value.z * value.z);
         log[6].lastValue = delta > 0.7
         socket.emit('accelerometer_cloud', log[6].lastValue);
@@ -215,7 +262,8 @@ listener.on('connection', function (socket) {
 
   console.log('Connection to client established');
 
-  listenForMessages(socket);
+  //listenForMessages(socket);
+  listenForMessagesCloud(socket);
 
   socket.on('disconnect', function () {
     console.log('Server has disconnected');
