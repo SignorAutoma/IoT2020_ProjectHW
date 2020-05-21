@@ -231,7 +231,7 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
-    //publishAsync(mqttTopic, client, data)           //Edge
+    publishAsync(mqttTopic, client, data)           //Edge
     publishCloud(mqttTopicCloud, clientCloud, data) //Cloud
   });
 

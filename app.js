@@ -107,15 +107,15 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
             log[5].values.push(values[i]._doc.value == "true" ? "Walking " : "Resting ");
           }
           else {
-            log[6].lastValue = values[i]._doc.value ? "Walking" : "Resting";
-            log[6].values.push(values[i]._doc.value ? "Walking " : "Resting ");
+            log[6].lastValue = values[i]._doc.value == "true" ? "Walking" : "Resting";
+            log[6].values.push(values[i]._doc.value == "true" ? "Walking " : "Resting ");
           }
         }
       })
   }
 });
 
-/* 
+/* CLOUD FUNCTION CODE
 function listenForMessagesCloud(socket) {
    // References an existing subscription
    const subscription = pubSubClient.subscription(subscriptionCloudFunction);
@@ -142,7 +142,7 @@ function listenForMessagesCloud(socket) {
          log[6].lastValue = value;
          log[6].values.push(value);
          socket.emit('accelerometer_cloud', log[6].lastValue);
-         //socket.emit('accelerometer', log[5].values);
+         socket.emit('accelerometer', log[5].values);
        }
        else {
          console.log("Something dosn't work...")
@@ -164,6 +164,7 @@ function listenForMessagesCloud(socket) {
      console.log(`${messageCount} message(s) received.`);
    }, timeout * 1000);
 } */
+
 function listenForMessages(socket) {
   console.log("Init listening")
   // References an existing subscription
@@ -222,15 +223,17 @@ function listenForMessages(socket) {
         log[5].lastValue = value;
         log[5].values.push(value);
         socket.emit('accelerometer', log[5].lastValue);
-        //socket.emit('accelerometer', log[5].values);
+        socket.emit('accelerometer', log[5].values);
       }
-      else if (device == "accelerometer_cloud"){
+      else if (device == "accelerometer_cloud") {
         //Compute at cloud, if delta > 0.7 then user is moving N.B. Cloud functions
         var delta = Math.sqrt(x * x + y * y + z * z);
         log[6].lastValue = delta > 0.7
         socket.emit('accelerometer_cloud', log[6].lastValue);
+        socket.emit('accelerometer_cloud', log[6].values);
+
       }
-      else { console.log("Invalid Device!")}
+      else { console.log("Invalid Device!") }
     }
     else {
       console.log("Invalid Data");
