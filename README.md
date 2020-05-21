@@ -8,7 +8,8 @@ In this part we are going to change the node.js virtual sensor with a RIOT appli
 #### Third assignment.
 In this section we will build on-top of the cloud based system developed in the previously parts. Now the virtual environmental station, running on RIOT, will publish random value to The Things Network through LoRaWAN, then we develop a bridge between the MQTT broker of TTN and the Google Cloud based infrastructure.
 The RIOT-OS application will be deployed on IOT-LAB in different nodes to test the system through real-world devices.
-
+#### Fourth assignment.
+Add an HTML5 mobile application that through the Generic Sensor API collects data form the accelerator sensor of the mobile phone. That data will be computed through a simple activity recognition model that detects if the user is standing still, or walking and finally sent to a cloud system (the model will be deployed both in edge and cloud way).
 ## Links
 Some usefull links to explain the project:
 
@@ -25,4 +26,8 @@ ________________________________________________________________________________
 
 [Hackster.io Tutorial - THIRD ASSIGNMENT](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-lorawan-ttn-mqtt-4378a4)
 
+_____________________________________________________________________________________________________________________________
+[Youtube Video Presentation - FOURTH ASSIGNMENT](TODO)
+
+[Hackster.io Tutorial - FOURTH ASSIGNMENT](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-user-activity-recognition-268bad)
 
