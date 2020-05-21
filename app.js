@@ -78,7 +78,7 @@ mongoose.connect(uri, { useNewUrlParser: true }, function (err, res) {
     lastHour.setHours(lastHour.getHours() - 1);
 
     Data.find({ "createdAt": { $gt: lastHour } })
-      .then(values => {
+      .then(values => { //retreive last hour values
         console.log(values);
         for (i = 0; i < values.length; i++) {
           console.log(values[i]._doc.device)
@@ -181,13 +181,6 @@ function listenForMessages(socket) {
       var x, y, z;
       var value = data[0] != "accelerometer_cloud" ? data[1].toString() : (x = data[1], y = data[2], z = data[3]);
 
-      new Data
-        ({
-          device: device,
-          value: value,
-          data: Date.now() / 1000
-        }).save();
-
       if (device == "thermometer") {
         log[0].lastValue = value;
         log[0].values.push(value);
@@ -219,21 +212,28 @@ function listenForMessages(socket) {
         socket.emit('rh_values', log[4].values);
       }
       else if (device == "accelerometer") {
-        //Compute at edge, receive and push the value without computing at cloud
+        //Computed at edge, receive and push the value without computing at cloud
         log[5].lastValue = value;
         log[5].values.push(value);
         socket.emit('accelerometer', log[5].lastValue);
         socket.emit('accelerometer', log[5].values);
       }
       else if (device == "accelerometer_cloud") {
-        //Compute at cloud, if delta > 0.7 then user is moving N.B. Cloud functions
+        //Compute at cloud, if delta > 0.7 then user is moving 
         var delta = Math.sqrt(x * x + y * y + z * z);
-        log[6].lastValue = delta > 0.7
+        value = delta > 0.7
+        log[6].lastValue = value
         socket.emit('accelerometer_cloud', log[6].lastValue);
         socket.emit('accelerometer_cloud', log[6].values);
-
       }
       else { console.log("Invalid Device!") }
+
+      new Data
+      ({
+        device: device,
+        value: value,
+        data: Date.now() / 1000
+      }).save();
     }
     else {
       console.log("Invalid Data");

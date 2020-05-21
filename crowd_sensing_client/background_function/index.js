@@ -3,7 +3,7 @@ const {PubSub} = require('@google-cloud/pubsub');
 // Creates a client; cache this for further use
 const pubSubClient = new PubSub("signorautoma-iot");
 
-
+//GLCOUD FUNCTION TEST
 exports.predict = async(data, context) => {
     const pubSubMessage = data;
 

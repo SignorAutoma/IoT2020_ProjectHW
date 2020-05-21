@@ -184,7 +184,7 @@ const publishAsync = (
 ) => {
   console.log("Edge computing");
 
-  // Function that push the sensor value on Google Cloud
+  // Function that push the sensor status on Google Cloud
   var status = JSON.stringify(data.status);
   var x = JSON.stringify(data.x);
   var y = JSON.stringify(data.y);
@@ -208,7 +208,6 @@ const publishCloud = (
   console.log("Cloud computing");
   console.log("x: " + x + " y: " + y + " z:" + z);
 
-
   const payload = deviceIdCloud + ":" + x + ":" + y + ":" + z + ":" + "crowd_sensing";
   // Publish "payload" to the MQTT topic. qos=1 means at least once delivery. (There is also qos=0)
   console.log('Publishing message:', payload);
@@ -231,8 +230,9 @@ listener.on('connection', function (socket) {
   console.log('Connection to client established - Crowd');
 
   socket.on('data', function (data) {
-    publishAsync(mqttTopic, client, data)           //Edge
-    publishCloud(mqttTopicCloud, clientCloud, data) //Cloud
+    //I use two kind of topic in order to separate accelerometer and accelerometer_cloud
+    publishAsync(mqttTopic, client, data)           //Edge push
+    publishCloud(mqttTopicCloud, clientCloud, data) //Cloud push
   });
 
   socket.on('disconnect', function () {
