@@ -14,7 +14,7 @@ Add an HTML5 mobile application that through the Generic Sensor API collects dat
 Some usefull links to explain the project:
 
 _____________________________________________________________________________________________________________________________
-[Youtube Video Presentation - FIRST ASSIGNMENT](https://www.youtube.com/watch?v=rRAg-Kg9FS4)
+[Youtube Video Presentation - FIRST ASSIGNMENT](https://www.youtube.com/watch?v=rRAg-Kg9FS4&list=PLNyABN6UZOFlzKVPhlynjhU8vFQ2H9BMs&index=1)
 
 [Hackster.io Tutorial - FIRST ASSIGNMENT](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-f30ccf)
 _____________________________________________________________________________________________________________________________
@@ -27,7 +27,7 @@ ________________________________________________________________________________
 [Hackster.io Tutorial - THIRD ASSIGNMENT](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-lorawan-ttn-mqtt-4378a4)
 
 _____________________________________________________________________________________________________________________________
-[Youtube Video Presentation - FOURTH ASSIGNMENT](TODO)
+[Youtube Video Presentation - FOURTH ASSIGNMENT](https://www.youtube.com/watch?v=yIpga-2m4A4&list=PLNyABN6UZOFlzKVPhlynjhU8vFQ2H9BMs&index=4)
 
 [Hackster.io Tutorial - FOURTH ASSIGNMENT](https://www.hackster.io/fabiocaputo996/google-cloud-based-iot-system-user-activity-recognition-268bad)
 
